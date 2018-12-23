@@ -1,0 +1,43 @@
+<html>
+	<head>
+		<script>		
+			function validate() {
+				var jsonStr = document.getElementById('txtArea').value;
+				if( jsonStr && jsonStr != '' ) {
+					try {
+						JSON.parse(jsonStr);
+					} catch(e) {
+						var exceptionMsg = e.message;
+						var outputMsg = exceptionMsg;
+						if( exceptionMsg.indexOf('at position ') != -1 ) {
+							var index = exceptionMsg.substring( exceptionMsg.indexOf('at position ') + 12 );
+							var jsonSubstring = jsonStr.substring( 0, index );
+							var lineCount = jsonSubstring.split(/\r\n|\r|\n/).length;
+							outputMsg = exceptionMsg.substring( 0, exceptionMsg.indexOf('at position ') ) + 'around line number ' + lineCount;
+						}
+						document.getElementById('status').innerHTML = '<p style="color:red"><b>' + outputMsg + '</b></p>';
+						return;
+					}
+					document.getElementById('status').innerHTML = '<p style="color:green"><b>Valid JSON!</b></p>';
+				}
+			}
+			
+			function clearTxtArea() {
+				var elTextArea = document.getElementById('txtArea');
+				elTextArea.value = "";
+				elTextArea.focus();
+			}
+		</script>
+	</head>
+	<body>
+		<div align="center">
+			<textarea id="txtArea" rows="50" cols="100" placeholder="Paste JSON"></textarea>
+		</div>
+		<div><br></div>
+		<div align="center">
+			<input type=button onclick="validate()" value="Validate"/>
+			<input type=button onclick="clearTxtArea()" value="Clear"/>
+		</div align="center">
+		<div id="status"></div>
+	</body>
+</html>
